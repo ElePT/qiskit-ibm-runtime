@@ -217,10 +217,12 @@ class FakeBackendV2(BackendV2):
             if self._props_dict is None:
                 self._set_props_dict_from_json()
             conf = BackendConfiguration.from_dict(self._conf_dict)
+            # print("CONFIG", conf.supported_instructions)
             props = None
             if self._props_dict is not None:
                 props = BackendProperties.from_dict(self._props_dict)  # type: ignore
 
+            # print("CONVERT")
             self._target = convert_to_target(
                 configuration=conf,
                 properties=props,
