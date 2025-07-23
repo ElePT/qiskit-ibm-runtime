@@ -76,7 +76,7 @@ from qiskit.primitives.containers import (
     SamplerPubResult,
     PrimitiveResult,
 )
-
+from qiskit.quantum_info import SparseObservable
 from qiskit_ibm_runtime.options.zne_options import (  # pylint: disable=ungrouped-imports
     ExtrapolatorType,
 )
@@ -292,6 +292,9 @@ class RuntimeEncoder(json.JSONEncoder):
                 ),  # type: ignore[no-untyped-call]
             )
             return {"__type__": "Instruction", "__value__": value}
+        if isinstance(obj, SparseObservable):
+            out_val = {"sparse_list": obj.to_sparse_list(), "num_qubits": obj.num_qubits}
+            return {"__type__": "SparseObservable", "__value__": out_val}
         if isinstance(obj, ObservablesArray):
             return {"__type__": "ObservablesArray", "__value__": obj.tolist()}
         if isinstance(obj, BindingsArray):
@@ -455,6 +458,10 @@ class RuntimeDecoder(json.JSONDecoder):
                 return Result.from_dict(obj_val)
             if obj_type == "spmatrix":
                 return _decode_and_deserialize(obj_val, scipy.sparse.load_npz, False)
+            if obj_type == "SparseObservable":
+                raw_list = obj_val.get("sparse_list", [])
+                sparse_list = [tuple(item) for item in raw_list]
+                return SparseObservable.from_sparse_list(sparse_list, obj_val.get("num_qubits", 0))
             if obj_type == "ObservablesArray":
                 return ObservablesArray(obj_val)
             if obj_type == "BindingsArray":
