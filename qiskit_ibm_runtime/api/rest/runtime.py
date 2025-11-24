@@ -205,6 +205,7 @@ class Runtime(RestAdapterBase):
             JSON response.
         """
         url = self.get_url("backends")
+        print("BACKENDS URL", url)
         return self.session.get(url, timeout=timeout, headers=self._HEADER_JSON_ACCEPT).json()
 
     def cloud_usage(self) -> Dict[str, Any]:

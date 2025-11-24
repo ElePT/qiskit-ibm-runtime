@@ -265,7 +265,7 @@ class RetrySession(Session):
             kwargs.update({"params": params})
         else:
             final_url = self.base_url + url
-
+        print("FINAL URL", final_url)
         # Add a timeout to the connection for non-proxy connections.
         if not self.proxies and "timeout" not in kwargs:
             kwargs.update({"timeout": self._timeout})

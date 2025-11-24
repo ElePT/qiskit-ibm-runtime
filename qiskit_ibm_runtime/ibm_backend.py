@@ -363,6 +363,11 @@ class IBMBackend(Backend):
             datetime = local_to_utc(datetime)
         if datetime or refresh or self._properties is None:
             api_properties = self._api_client.backend_properties(self.name, datetime=datetime)
+            import json
+            with open("mcmurdo_props.json", "w") as file:
+                # file.write(api_properties)
+                json.dump(api_properties, file)
+            print("API PROPERTIES", api_properties)
             if not api_properties:
                 return None
             backend_properties = properties_from_server_data(
